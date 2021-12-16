@@ -1,4 +1,18 @@
-# Ribbon Frontend
+# Integrating “Login with Unstoppable” as a Dapp login option
+
+Hackathon [link](https://gitcoin.co/issue/unstoppabledomains/gitcoin-bounties/1/100027208)
+
+Project name: Integrating UD login on Ribbon Finance (Gitcoin @13233 - IF Login Integration)
+
+YouTube demo video: [here](https://www.youtube.com/watch?v=gZkjRqjRL6o)
+
+Contact information:
+
+Discord ID: CODYX#0557
+
+UnstoppableDomain email address: aimeric.seguin(a/t)gmail(d/ot)com
+
+# Ribbon Finance
 
 This repo hosts the source code that runs 3 of Ribbon Finance's webapps, the landing page and the v1 webapp.
 
