@@ -9,7 +9,11 @@ export interface WalletStatusProps {
 
 export type WalletButtonProps = AccountStatusVariantProps & WalletStatusProps;
 
-export type connectorType = "metamask" | "walletConnect" | "walletLink";
+export type connectorType =
+  | "metamask"
+  | "walletConnect"
+  | "walletLink"
+  | "unstoppableDomains";
 
 export interface ConnectorButtonProps {
   status: "normal" | "initializing" | "neglected" | "connected";

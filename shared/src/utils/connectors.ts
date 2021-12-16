@@ -1,6 +1,7 @@
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
+import { UAuthConnector } from "@uauth/web3-react";
 import { CHAINID, isDevelopment } from "./env";
 
 const supportedChainIds = isDevelopment() ?
@@ -20,13 +21,13 @@ export const getWalletConnectConnector = () =>
   new WalletConnectConnector({
     supportedChainIds,
     rpc: isDevelopment()
-      ?
-        {
+      ? 
+      {
           [CHAINID.ETH_KOVAN]: process.env.REACT_APP_TESTNET_URI || "",
           [CHAINID.AVAX_FUJI]: process.env.REACT_APP_FUJI_URI || "",
         }
-      :
-        {
+      : 
+      {
           [CHAINID.ETH_MAINNET]: process.env.REACT_APP_MAINNET_URI || "",
           [CHAINID.AVAX_MAINNET]: process.env.REACT_APP_AVAX_URI || ""
         },
@@ -40,4 +41,15 @@ export const walletlinkConnector = new WalletLinkConnector({
     : process.env.REACT_APP_MAINNET_URI)!,
   appName: "Ribbon Finance",
   supportedChainIds,
+});
+
+export const uauthConnector = new UAuthConnector({
+  clientID: process.env.REACT_APP_UD_CLIENT_ID,
+  clientSecret: process.env.REACT_APP_UD_CLIENT_SECRET,
+  redirectUri: process.env.REACT_APP_UD_REDIRECT_URI,
+  scope: process.env.REACT_APP_UD_SCOPE,
+  connectors: {
+    injected: injectedConnector,
+    walletconnect: getWalletConnectConnector(),
+  },
 });

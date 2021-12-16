@@ -4,11 +4,13 @@ import styled from "styled-components";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
+import { UAuthConnector } from "@uauth/web3-react";
 
 import {
   injectedConnector,
   getWalletConnectConnector,
   walletlinkConnector,
+  uauthConnector,
 } from "../../utils/connectors";
 
 import { ConnectorButtonProps, connectorType } from "./types";
@@ -26,6 +28,7 @@ import {
   MetamaskIcon,
   WalletConnectIcon,
   WalletLinkIcon,
+  UnstoppableDomainsIcon,
 } from "../../assets/icons/connector";
 import useTextAnimation from "../../hooks/useTextAnimation";
 import BasicModal from "../Common/BasicModal";
@@ -142,10 +145,21 @@ const WalletConnectModal: React.FC = () => {
           break;
         case "walletLink":
           await activateWeb3(walletlinkConnector);
+          break;
+        case "unstoppableDomains":
+          setShow(false);
+          try {
+            await activateWeb3(uauthConnector, () => {}, true);
+          } catch (err) {
+            console.error(err);
+            setShow(true);
+            setConnectingConnector(undefined);
+          }
+          break;
       }
       setConnectingConnector(undefined);
     },
-    [activateWeb3, connector, active]
+    [activateWeb3, connector, active, setShow]
   );
 
   useEffect(() => {
@@ -167,6 +181,10 @@ const WalletConnectModal: React.FC = () => {
             break;
           case "walletLink":
             if (connector instanceof WalletLinkConnector) return "connected";
+            break;
+          case "unstoppableDomains":
+            if (connector instanceof UAuthConnector) return "connected";
+            break;
         }
       }
 
@@ -190,6 +208,8 @@ const WalletConnectModal: React.FC = () => {
         return <WalletConnectIcon height={40} width={40} />;
       case "walletLink":
         return <StyledWalletLinkIcon height={40} width={40} />;
+      case "unstoppableDomains":
+        return <UnstoppableDomainsIcon height={40} width={40} />;
     }
   }, []);
 
@@ -222,7 +242,7 @@ const WalletConnectModal: React.FC = () => {
   );
 
   return (
-    <BasicModal show={show} onClose={onClose} height={354} maxWidth={500}>
+    <BasicModal show={show} onClose={onClose} height={440} maxWidth={500}>
       <>
         <BaseModalContentColumn marginTop={8}>
           <Title>CONNECT WALLET</Title>
@@ -235,6 +255,9 @@ const WalletConnectModal: React.FC = () => {
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={16}>
           {renderConnectorButton("walletLink", "COINBASE WALLET")}
+        </BaseModalContentColumn>
+        <BaseModalContentColumn marginTop={16}>
+          {renderConnectorButton("unstoppableDomains", "UNSTOPPABLE DOMAINS")}
         </BaseModalContentColumn>
         <BaseModalContentColumn marginTop={16}>
           <LearnMoreLink

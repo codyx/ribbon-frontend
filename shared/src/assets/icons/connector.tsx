@@ -200,3 +200,38 @@ export const WalletLinkIcon: React.FC<IconProps> = (props) => (
     </g>
   </svg>
 );
+
+export const UnstoppableDomainsIcon: React.FC<IconProps> = (props) => (
+  <svg
+    version="1.1"
+    id="Layer_1"
+    xmlns="http://www.w3.org/2000/svg"
+    x="0px"
+    y="0px"
+    viewBox="0 0 48 48"
+    enable-background="new 0 0 48 48"
+    {...props}
+  >
+    {" "}
+    <image
+      id="image0"
+      width="48"
+      height="48"
+      x="0"
+      y="0"
+      href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAABGdBTUEAALGPC/xhBQAAACBjSFJN
+AAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAApVBMVEUAAABQSPdMR/dMRvZM
+R/hMR/hMRvhLR/ZISPdNR/hMR/d4dfm8uvxEcPliXvjS0f3////p6P47ovsv6f+wrvtIW/g2wP3n
+8v4x3/7l/P95dfmxrvs+mPvo6P4w3/5KUfgz1f5Devpqxv1j7v88ovxFb/l7s/y+9/+amPo0yv6Y
+ofulo/vHxvyPjPpGZfhXUvf09P6EgfmEgPqxrvzd3P6mo/tXUviePjI6AAAACnRSTlMAIL/vr++v
+sCCvShoWkwAAAAFiS0dEEJWyDSwAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQflDBAFEREg
+FlsGAAAA8klEQVRIx+3WW1OCUBDA8QUicRFYOgFpXEqjm1Ja1vf/aJ2DTM2oA7uPNu4DnJnz/3F7
+AsCyHeTOhQVg8XM9rgWXkh7RBlmPrhTgGfxL4E/0IWCDMKIY8UpxwTURxUmq2ED3lN0oGZgqFvBD
+EfAjmknAre4MyLmgaIH+OjtQ5hUHBHeqBdl9tbd9HMzNkxgQH2wfBwvdpyJQPtQoAY9V91mHQZI+
+6S7Sq2fqFr0geMlf2ysvV+ZEzQB4qxHf1/Q7cch4B9z8gQ/kANwUu3zdIA9g+LklKr6+kQv65gxO
+FYj+HAywZf0IPNEtHA/AG/Nz24MfkaNjgR749qkAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjEtMTIt
+MTZUMDI6MTc6MTcrMDM6MDCG5n0uAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIxLTEyLTE2VDAyOjE3
+OjE3KzAzOjAw97vFkgAAAABJRU5ErkJggg=="
+    />
+  </svg>
+);

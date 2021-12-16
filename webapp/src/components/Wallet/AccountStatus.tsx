@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import styled from "styled-components";
 import { useWeb3React } from "@web3-react/core";
+import { UAuthConnector } from "@uauth/web3-react";
 import { setTimeout } from "timers";
 import { AnimatePresence, motion } from "framer";
 
@@ -51,6 +52,7 @@ import { getAssetDecimals } from "shared/lib/utils/asset";
 import YourPosition from "shared/lib/components/Vault/YourPosition";
 import AirdropButton from "../Airdrop/AirdropButton";
 import AirdropModal from "../Airdrop/AirdropModal";
+import UnstoppableIcon from "webapp/src/assets/img/unstoppable-domains.png";
 
 const walletButtonMarginLeft = 5;
 const walletButtonWidth = 55;
@@ -283,6 +285,12 @@ const AirdropMenuItem = styled(MenuItem)`
   padding: 8px 8px;
 `;
 
+const Image = styled.img`
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
+`;
+
 interface AccountStatusProps {
   vault?: {
     vaultOption: VaultOptions;
@@ -312,6 +320,10 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
   const [copyState, setCopyState] = useState<"visible" | "hiding" | "hidden">(
     "hidden"
   );
+  const [uDomain, setUDomain] = useState<string>(
+    window?.localStorage?.getItem("uauth-default-username") || ""
+  );
+  const [showDomain, setShowDomain] = useState<boolean>(true);
   const { status, vaultLimit } = useVaultData(
     vault?.vaultOption || VaultList[0]
   );
@@ -324,11 +336,22 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     if (variant === "desktop" && isMenuOpen) onCloseMenu();
   });
 
+  const resolveUDomain = useCallback(async () => {
+    try {
+      const { sub } = await (connector as UAuthConnector).uauth.user();
+      setUDomain(sub);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [connector]);
+
   useEffect(() => {
     if (library && account) {
       addConnectEvent("header", account);
     }
-  }, [library, account]);
+
+    if (connector && connector instanceof UAuthConnector) resolveUDomain();
+  }, [library, account, connector, resolveUDomain]);
 
   useEffect(() => {
     let timer;
@@ -382,6 +405,13 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     }
   }, [account]);
 
+  const handleCopyDomain = useCallback(() => {
+    if (uDomain) {
+      copyTextToClipboard(uDomain);
+      setCopyState("visible");
+    }
+  }, [uDomain]);
+
   const handleOpenEtherscan = useCallback(() => {
     if (account && chainId) {
       window.open(`${BLOCKCHAIN_EXPLORER_URI[chainId]}/address/${account}`);
@@ -392,6 +422,8 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     if (connector instanceof WalletConnectConnector) {
       connector.close();
     }
+    if (window.localStorage.getItem("uauth-default-username"))
+      window?.localStorage?.removeItem("uauth-default-username");
     deactivateWeb3();
     onCloseMenu();
   }, [deactivateWeb3, onCloseMenu, connector]);
@@ -408,8 +440,14 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
     active && account ? (
       <>
         <Indicator connected={active} />
+        {uDomain && showDomain && (
+          <Image src={UnstoppableIcon} alt="Unstoppable" />
+        )}
         <WalletButtonText connected={active}>
-          {truncateAddress(account)} <ButtonArrow isOpen={isMenuOpen} />
+          {uDomain && showDomain
+            ? uDomain?.slice(0, 32)
+            : truncateAddress(account)}{" "}
+          <ButtonArrow isOpen={isMenuOpen} />
         </WalletButtonText>
       </>
     ) : (
@@ -508,11 +546,23 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
             }}
           >
             {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
-            {renderMenuItem(
-              copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED",
-              handleCopyAddress,
-              renderCopiedButton()
-            )}
+            {uDomain &&
+              account &&
+              renderMenuItem("TOGGLE DOMAIN <> ADDRESS", () =>
+                setShowDomain(!showDomain)
+              )}
+            {!showDomain &&
+              renderMenuItem(
+                copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED",
+                handleCopyAddress,
+                renderCopiedButton()
+              )}
+            {showDomain &&
+              renderMenuItem(
+                copyState === "hidden" ? "COPY DOMAIN" : "DOMAIN COPIED",
+                handleCopyDomain,
+                renderCopiedButton()
+              )}
             {chainId &&
               renderMenuItem(
                 `OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId]}`,
@@ -538,11 +588,23 @@ const AccountStatus: React.FC<AccountStatusProps> = ({
         overflowOnOpen={false}
       >
         {renderMenuItem("CHANGE WALLET", handleChangeWallet)}
-        {renderMenuItem(
-          copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED",
-          handleCopyAddress,
-          renderCopiedButton()
-        )}
+        {uDomain &&
+          account &&
+          renderMenuItem("TOGGLE DOMAIN <> ADDRESS", () =>
+            setShowDomain(!showDomain)
+          )}
+        {!showDomain &&
+          renderMenuItem(
+            copyState === "hidden" ? "COPY ADDRESS" : "ADDRESS COPIED",
+            handleCopyAddress,
+            renderCopiedButton()
+          )}
+        {showDomain &&
+          renderMenuItem(
+            copyState === "hidden" ? "COPY DOMAIN" : "DOMAIN COPIED",
+            handleCopyDomain,
+            renderCopiedButton()
+          )}
         {chainId &&
           renderMenuItem(
             `OPEN IN ${BLOCKCHAIN_EXPLORER_NAME[chainId]}`,
